@@ -1,11 +1,13 @@
 using System;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Node
 {
+    public UnityEngine.Object source;
     public Rect rect;
-    public string title;
+    public string title = "Hey";
     public bool isDragged;
     public bool isSelected;
 
@@ -38,7 +40,13 @@ public class Node
     {
         inPoint.Draw();
         outPoint.Draw();
-        GUI.Box(rect, title, style);
+        GUIContent content;
+                content = new GUIContent("This is a box");
+        GUI.Box(rect, content);
+
+        EditorGUILayout.BeginHorizontal();
+        source = EditorGUILayout.ObjectField(source, typeof(UnityEvent), true);
+        EditorGUILayout.EndHorizontal();
     }
 
     public bool ProcessEvents(Event e)
