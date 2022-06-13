@@ -40,13 +40,11 @@ public class Node
     {
         inPoint.Draw();
         outPoint.Draw();
-        GUIContent content;
-                content = new GUIContent("This is a box");
-        GUI.Box(rect, content);
-
-        EditorGUILayout.BeginHorizontal();
+        GUI.backgroundColor = Color.yellow;
+        GUILayout.BeginArea(rect,style);
+        GUIContent content = new GUIContent("This is a box");
         source = EditorGUILayout.ObjectField(source, typeof(UnityEvent), true);
-        EditorGUILayout.EndHorizontal();
+        GUILayout.EndArea();
     }
 
     public bool ProcessEvents(Event e)
