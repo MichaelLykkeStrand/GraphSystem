@@ -5,7 +5,7 @@ using UnityEngine.Events;
 
 public class Node
 {
-    public UnityEvent source;
+    //public UnityEvent source;
     public NodeCondition condition;
     public Rect rect;
     public string title = "Hey";
@@ -48,7 +48,7 @@ public class Node
         outPoint.Draw();
         GUILayout.BeginArea(rect,style);
         GUIContent content = new GUIContent("This is a box");
-        source = EditorGUILayout.ObjectField(source, typeof(UnityEvent), true);
+        //source = EditorGUILayout.ObjectField(source, typeof(UnityEvent), true);
         condition = EditorGUILayout.ObjectField(condition, typeof(NodeCondition), true) as NodeCondition;
 
         EditorGUILayout.EditorToolbar();
