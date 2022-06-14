@@ -1,4 +1,5 @@
 using System;
+using UnityEditor;
 using UnityEngine;
 
 public enum ConnectionPointType { In, Out }
@@ -15,8 +16,20 @@ public class ConnectionPoint
 
     public Action<ConnectionPoint> OnClickConnectionPoint;
 
-    public ConnectionPoint(Node node, ConnectionPointType type, GUIStyle style, Action<ConnectionPoint> OnClickConnectionPoint)
-    {
+    public ConnectionPoint(Node node, ConnectionPointType type, Action<ConnectionPoint> OnClickConnectionPoint)
+    {    
+        if(type == ConnectionPointType.In){
+            style = new GUIStyle();
+            style.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/btn left.png") as Texture2D;
+            style.active.background = EditorGUIUtility.Load("builtin skins/darkskin/images/btn left on.png") as Texture2D;
+            style.border = new RectOffset(4, 4, 12, 12);
+        } else if(type == ConnectionPointType.Out)
+        {
+                    style = new GUIStyle();
+            style.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/btn right.png") as Texture2D;
+            style.active.background = EditorGUIUtility.Load("builtin skins/darkskin/images/btn right on.png") as Texture2D;
+            style.border = new RectOffset(4, 4, 12, 12);
+        }
         this.node = node;
         this.type = type;
         this.style = style;

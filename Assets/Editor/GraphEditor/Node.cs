@@ -5,7 +5,8 @@ using UnityEngine.Events;
 
 public class Node
 {
-    public UnityEngine.Object source;
+    public UnityEvent source;
+    public NodeCondition condition;
     public Rect rect;
     public string title = "Hey";
     public bool isDragged;
@@ -14,20 +15,25 @@ public class Node
     public ConnectionPoint inPoint;
     public ConnectionPoint outPoint;
 
-    public GUIStyle style;
-    public GUIStyle defaultNodeStyle;
-    public GUIStyle selectedNodeStyle;
-
     public Action<Node> OnRemoveNode;
 
-    public Node(Vector2 position, float width, float height, GUIStyle nodeStyle, GUIStyle selectedStyle, GUIStyle inPointStyle, GUIStyle outPointStyle, Action<ConnectionPoint> OnClickInPoint, Action<ConnectionPoint> OnClickOutPoint, Action<Node> OnClickRemoveNode)
+    private GUIStyle style;
+
+    private GUIStyle defaultNodeStyle;
+    private GUIStyle selectedNodeStyle;
+
+    public Node(Vector2 position, float width, float height, Action<ConnectionPoint> OnClickInPoint, Action<ConnectionPoint> OnClickOutPoint, Action<Node> OnClickRemoveNode)
     {
+        defaultNodeStyle = new GUIStyle();
+        defaultNodeStyle.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node1.png") as Texture2D;
+        defaultNodeStyle.border = new RectOffset(12, 12, 12, 12);
+        selectedNodeStyle = new GUIStyle();
+        selectedNodeStyle.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node1 on.png") as Texture2D;
+        selectedNodeStyle.border = new RectOffset(12, 12, 12, 12);
+        this.style = defaultNodeStyle;
         rect = new Rect(position.x, position.y, width, height);
-        style = nodeStyle;
-        inPoint = new ConnectionPoint(this, ConnectionPointType.In, inPointStyle, OnClickInPoint);
-        outPoint = new ConnectionPoint(this, ConnectionPointType.Out, outPointStyle, OnClickOutPoint);
-        defaultNodeStyle = nodeStyle;
-        selectedNodeStyle = selectedStyle;
+        inPoint = new ConnectionPoint(this, ConnectionPointType.In, OnClickInPoint);
+        outPoint = new ConnectionPoint(this, ConnectionPointType.Out, OnClickOutPoint);
         OnRemoveNode = OnClickRemoveNode;
     }
 
@@ -40,10 +46,12 @@ public class Node
     {
         inPoint.Draw();
         outPoint.Draw();
-        GUI.backgroundColor = Color.yellow;
         GUILayout.BeginArea(rect,style);
         GUIContent content = new GUIContent("This is a box");
         source = EditorGUILayout.ObjectField(source, typeof(UnityEvent), true);
+        condition = EditorGUILayout.ObjectField(condition, typeof(NodeCondition), true) as NodeCondition;
+
+        EditorGUILayout.EditorToolbar();
         GUILayout.EndArea();
     }
 
