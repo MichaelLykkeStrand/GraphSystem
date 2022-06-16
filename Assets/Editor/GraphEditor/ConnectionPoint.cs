@@ -32,7 +32,6 @@ public class ConnectionPoint
         }
         this.node = node;
         this.type = type;
-        this.style = style;
         this.OnClickConnectionPoint = OnClickConnectionPoint;
         rect = new Rect(0, 0, 10f, 20f);
     }

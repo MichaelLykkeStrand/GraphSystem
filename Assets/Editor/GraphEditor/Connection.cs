@@ -4,12 +4,17 @@ using UnityEngine;
 
 public class Connection
 {
+    public NodeTransition condition;
     public ConnectionPoint inPoint;
     public ConnectionPoint outPoint;
     public Action<Connection> OnClickRemoveConnection;
-
+    public Rect rect;
+    private GUIStyle style;
     public Connection(ConnectionPoint inPoint, ConnectionPoint outPoint, Action<Connection> OnClickRemoveConnection)
     {
+        style = new GUIStyle();
+        style.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node1.png") as Texture2D;
+        style.border = new RectOffset(12, 12, 12, 12);
         this.inPoint = inPoint;
         this.outPoint = outPoint;
         this.OnClickRemoveConnection = OnClickRemoveConnection;
@@ -17,6 +22,8 @@ public class Connection
 
     public void Draw()
     {
+        Vector2 center = (inPoint.rect.center + outPoint.rect.center) * 0.5f;
+        rect = new Rect(center.x, center.y, 100, 50);
         Handles.DrawBezier(
             inPoint.rect.center,
             outPoint.rect.center,
@@ -27,12 +34,16 @@ public class Connection
             2f
         );
 
-        if (Handles.Button((inPoint.rect.center + outPoint.rect.center) * 0.5f, Quaternion.identity, 4, 8, Handles.RectangleHandleCap))
+        if (Handles.Button(center, Quaternion.identity, 4, 8, Handles.RectangleHandleCap))
         {
             if (OnClickRemoveConnection != null)
             {
                 OnClickRemoveConnection(this);
             }
         }
+
+        GUILayout.BeginArea(rect, style);
+        condition = EditorGUILayout.ObjectField(condition, typeof(NodeTransition), true) as NodeTransition;
+        GUILayout.EndArea();
     }
 }

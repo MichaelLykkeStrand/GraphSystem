@@ -1,17 +1,13 @@
 using System;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Events;
 
 public class Node
 {
-    //public UnityEvent source;
-    public NodeCondition condition;
     public Rect rect;
-    public string title = "Hey";
     public bool isDragged;
     public bool isSelected;
-
+    public UnityEngine.Object dataObject; 
     public ConnectionPoint inPoint;
     public ConnectionPoint outPoint;
 
@@ -48,10 +44,6 @@ public class Node
         outPoint.Draw();
         GUILayout.BeginArea(rect,style);
         GUIContent content = new GUIContent("This is a box");
-        //source = EditorGUILayout.ObjectField(source, typeof(UnityEvent), true);
-        condition = EditorGUILayout.ObjectField(condition, typeof(NodeCondition), true) as NodeCondition;
-
-        EditorGUILayout.EditorToolbar();
         GUILayout.EndArea();
     }
 

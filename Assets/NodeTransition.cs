@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class NodeCondition : MonoBehaviour, Completeable
+public class NodeTransition : MonoBehaviour, Completeable
 {
     public Action onComplete;
 
