@@ -7,7 +7,7 @@ public class Node
     public Rect rect;
     public bool isDragged;
     public bool isSelected;
-    public UnityEngine.Object dataObject; 
+    public NodeData dataObject; 
     public ConnectionPoint inPoint;
     public ConnectionPoint outPoint;
 
@@ -31,6 +31,7 @@ public class Node
         inPoint = new ConnectionPoint(this, ConnectionPointType.In, OnClickInPoint);
         outPoint = new ConnectionPoint(this, ConnectionPointType.Out, OnClickOutPoint);
         OnRemoveNode = OnClickRemoveNode;
+        
     }
 
     public void Drag(Vector2 delta)
@@ -42,8 +43,9 @@ public class Node
     {
         inPoint.Draw();
         outPoint.Draw();
-        GUILayout.BeginArea(rect,style);
-        GUIContent content = new GUIContent("This is a box");
+
+        GUILayout.BeginArea(rect, style);
+        dataObject = EditorGUILayout.ObjectField(dataObject, typeof(NodeData), true) as NodeData;
         GUILayout.EndArea();
     }
 
