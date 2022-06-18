@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
+using System;
 
 public class GraphEditor : EditorWindow
 {
@@ -16,6 +17,9 @@ public class GraphEditor : EditorWindow
     private Vector2 offset;
     private Vector2 drag;
 
+    private int toolbarInt = -1;
+    public string[] toolbarStrings = new string[] { "Open", "Save"};
+
     [MenuItem("Window/Node Based Editor")]
     private static void OpenWindow()
     {
@@ -30,6 +34,8 @@ public class GraphEditor : EditorWindow
 
     private void OnGUI()
     {
+        DrawTools();
+
         DrawGrid(20, 0.2f, Color.gray);
         DrawGrid(100, 0.4f, Color.gray);
 
@@ -42,6 +48,18 @@ public class GraphEditor : EditorWindow
         ProcessEvents(Event.current);
 
         if (GUI.changed) Repaint();
+    }
+
+    private void DrawTools()
+    {
+        GUILayout.BeginHorizontal(EditorStyles.toolbar);
+        DrawToolStrip();
+        GUILayout.EndHorizontal();
+    }
+
+    private void DrawToolStrip()
+    {
+        toolbarInt = GUI.Toolbar(new Rect(25, 25, 250, 30), toolbarInt, toolbarStrings);
     }
 
     private void DrawGrid(float gridSpacing, float gridOpacity, Color gridColor)
@@ -196,7 +214,7 @@ public class GraphEditor : EditorWindow
             nodes = new List<Node>();
         }
 
-        nodes.Add(new Node(mousePosition, 300, 300, OnClickInPoint, OnClickOutPoint, OnClickRemoveNode));
+        nodes.Add(new Node(mousePosition, 180, 100, OnClickInPoint, OnClickOutPoint, OnClickRemoveNode));
     }
 
     private void OnClickInPoint(ConnectionPoint inPoint)

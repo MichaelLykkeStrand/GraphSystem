@@ -10,6 +10,8 @@ public class Connection
     public Action<Connection> OnClickRemoveConnection;
     public Rect rect;
     private GUIStyle style;
+    private int width = 150;
+    private int height = 20;
     public Connection(ConnectionPoint inPoint, ConnectionPoint outPoint, Action<Connection> OnClickRemoveConnection)
     {
         style = new GUIStyle();
@@ -23,7 +25,7 @@ public class Connection
     public void Draw()
     {
         Vector2 center = (inPoint.rect.center + outPoint.rect.center) * 0.5f;
-        rect = new Rect(center.x, center.y, 100, 50);
+        rect = new Rect(center.x-width/2, center.y, width, height);
         Handles.DrawBezier(
             inPoint.rect.center,
             outPoint.rect.center,
