@@ -5,8 +5,7 @@ using System;
 
 public class GraphEditor : EditorWindow
 {
-    private List<Node> nodes;
-    private List<Connection> connections;
+    private Graph graph;
 
     private GUIStyle inPointStyle;
     private GUIStyle outPointStyle;
@@ -29,7 +28,9 @@ public class GraphEditor : EditorWindow
 
     private void OnEnable()
     {
-
+        graph = new Graph();
+        graph.connections = new List<Connection>();
+        graph.nodes = new List<Node>();
     }
 
     private void OnGUI()
@@ -46,8 +47,40 @@ public class GraphEditor : EditorWindow
 
         ProcessNodeEvents(Event.current);
         ProcessEvents(Event.current);
+        ProcessToolStrip();
 
         if (GUI.changed) Repaint();
+    }
+
+    // TODO refactor to use enum?
+    private void ProcessToolStrip()
+    {
+        switch (toolbarInt)
+        {
+            case 0:
+                OpenGraph();
+                break;
+
+            case 1:
+                SaveGraph();
+                break;
+        }
+
+        toolbarInt = -1;
+    }
+    private void OpenGraph()
+    {
+        AssetDatabase.Refresh();
+        string absPath = EditorUtility.OpenFilePanel("Select Graph","", "asset");
+        string relativePath = absPath.Substring(absPath.IndexOf("Assets/"));
+        this.graph = AssetDatabase.LoadAssetAtPath<Graph>(relativePath);
+
+    }
+    private void SaveGraph()
+    {
+        string absPath = EditorUtility.SaveFilePanel("Save Graph", "", "graph","asset");
+        string relativePath = absPath.Substring(absPath.IndexOf("Assets/"));
+        AssetDatabase.CreateAsset(graph, relativePath);
     }
 
     private void DrawTools()
@@ -89,22 +122,22 @@ public class GraphEditor : EditorWindow
 
     private void DrawNodes()
     {
-        if (nodes != null)
+        if (graph.nodes != null)
         {
-            for (int i = 0; i < nodes.Count; i++)
+            for (int i = 0; i < graph.nodes.Count; i++)
             {
-                nodes[i].Draw();
+                graph.nodes[i].Draw();
             }
         }
     }
 
     private void DrawConnections()
     {
-        if (connections != null)
+        if (graph.connections != null)
         {
-            for (int i = 0; i < connections.Count; i++)
+            for (int i = 0; i < graph.connections.Count; i++)
             {
-                connections[i].Draw();
+                graph.connections[i].Draw();
             }
         }
     }
@@ -138,11 +171,11 @@ public class GraphEditor : EditorWindow
 
     private void ProcessNodeEvents(Event e)
     {
-        if (nodes != null)
+        if (graph.nodes != null)
         {
-            for (int i = nodes.Count - 1; i >= 0; i--)
+            for (int i = graph.nodes.Count - 1; i >= 0; i--)
             {
-                bool guiChanged = nodes[i].ProcessEvents(e);
+                bool guiChanged = graph.nodes[i].ProcessEvents(e);
 
                 if (guiChanged)
                 {
@@ -196,11 +229,11 @@ public class GraphEditor : EditorWindow
     {
         drag = delta;
 
-        if (nodes != null)
+        if (graph.nodes != null)
         {
-            for (int i = 0; i < nodes.Count; i++)
+            for (int i = 0; i < graph.nodes.Count; i++)
             {
-                nodes[i].Drag(delta);
+                graph.nodes[i].Drag(delta);
             }
         }
 
@@ -209,12 +242,7 @@ public class GraphEditor : EditorWindow
 
     private void OnClickAddNode(Vector2 mousePosition)
     {
-        if (nodes == null)
-        {
-            nodes = new List<Node>();
-        }
-
-        nodes.Add(new Node(mousePosition, 180, 100, OnClickInPoint, OnClickOutPoint, OnClickRemoveNode));
+        graph.nodes.Add(new Node(mousePosition, 180, 100, OnClickInPoint, OnClickOutPoint, OnClickRemoveNode));
     }
 
     private void OnClickInPoint(ConnectionPoint inPoint)
@@ -255,42 +283,37 @@ public class GraphEditor : EditorWindow
 
     private void OnClickRemoveNode(Node node)
     {
-        if (connections != null)
+        if (graph.connections != null)
         {
             List<Connection> connectionsToRemove = new List<Connection>();
 
-            for (int i = 0; i < connections.Count; i++)
+            for (int i = 0; i < graph.connections.Count; i++)
             {
-                if (connections[i].inPoint == node.inPoint || connections[i].outPoint == node.outPoint)
+                if (graph.connections[i].inPoint == node.inPoint || graph.connections[i].outPoint == node.outPoint)
                 {
-                    connectionsToRemove.Add(connections[i]);
+                    connectionsToRemove.Add(graph.connections[i]);
                 }
             }
 
             for (int i = 0; i < connectionsToRemove.Count; i++)
             {
-                connections.Remove(connectionsToRemove[i]);
+                graph.connections.Remove(connectionsToRemove[i]);
             }
 
             connectionsToRemove = null;
         }
 
-        nodes.Remove(node);
+        graph.nodes.Remove(node);
     }
 
     private void OnClickRemoveConnection(Connection connection)
     {
-        connections.Remove(connection);
+        graph.connections.Remove(connection);
     }
 
     private void CreateConnection()
     {
-        if (connections == null)
-        {
-            connections = new List<Connection>();
-        }
-
-        connections.Add(new Connection(selectedInPoint, selectedOutPoint, OnClickRemoveConnection));
+        graph.connections.Add(new Connection(selectedInPoint, selectedOutPoint, OnClickRemoveConnection));
     }
 
     private void ClearConnectionSelection()
