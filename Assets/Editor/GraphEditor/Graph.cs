@@ -5,5 +5,5 @@ using UnityEngine;
 public class Graph : ScriptableObject
 {
     public List<Node> nodes;
-    public List<Connection> connections;
+    public List<Edge> edges;
 }

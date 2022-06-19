@@ -7,9 +7,6 @@ public class GraphEditor : EditorWindow
 {
     private Graph graph;
 
-    private GUIStyle inPointStyle;
-    private GUIStyle outPointStyle;
-
     private ConnectionPoint selectedInPoint;
     private ConnectionPoint selectedOutPoint;
 
@@ -28,7 +25,7 @@ public class GraphEditor : EditorWindow
 
     private void OnEnable()
     {
-        graph = new Graph();
+        graph = ScriptableObject.CreateInstance<Graph>();
         graph.connections = new List<Connection>();
         graph.nodes = new List<Node>();
     }
@@ -133,11 +130,11 @@ public class GraphEditor : EditorWindow
 
     private void DrawConnections()
     {
-        if (graph.connections != null)
+        if (graph.edges != null)
         {
-            for (int i = 0; i < graph.connections.Count; i++)
+            for (int i = 0; i < graph.edges.Count; i++)
             {
-                graph.connections[i].Draw();
+                graph.edges[i].Draw();
             }
         }
     }
@@ -242,7 +239,7 @@ public class GraphEditor : EditorWindow
 
     private void OnClickAddNode(Vector2 mousePosition)
     {
-        graph.nodes.Add(new Node(mousePosition, 180, 100, OnClickInPoint, OnClickOutPoint, OnClickRemoveNode));
+        graph.nodes.Add(new NodeController(mousePosition, 180, 100, OnClickInPoint, OnClickOutPoint, OnClickRemoveNode));
     }
 
     private void OnClickInPoint(ConnectionPoint inPoint)
@@ -281,23 +278,23 @@ public class GraphEditor : EditorWindow
         }
     }
 
-    private void OnClickRemoveNode(Node node)
+    private void OnClickRemoveNode(NodeController node)
     {
-        if (graph.connections != null)
+        if (graph.edges != null)
         {
             List<Connection> connectionsToRemove = new List<Connection>();
 
-            for (int i = 0; i < graph.connections.Count; i++)
+            for (int i = 0; i < graph.edges.Count; i++)
             {
-                if (graph.connections[i].inPoint == node.inPoint || graph.connections[i].outPoint == node.outPoint)
+                if (graph.edges[i].fromNode == node.inPoint || graph.edges[i].toNode == node.outPoint)
                 {
-                    connectionsToRemove.Add(graph.connections[i]);
+                    connectionsToRemove.Add(graph.edges[i]);
                 }
             }
 
             for (int i = 0; i < connectionsToRemove.Count; i++)
             {
-                graph.connections.Remove(connectionsToRemove[i]);
+                graph.edges.Remove(connectionsToRemove[i]);
             }
 
             connectionsToRemove = null;
@@ -308,12 +305,12 @@ public class GraphEditor : EditorWindow
 
     private void OnClickRemoveConnection(Connection connection)
     {
-        graph.connections.Remove(connection);
+        graph.edges.Remove(connection);
     }
 
     private void CreateConnection()
     {
-        graph.connections.Add(new Connection(selectedInPoint, selectedOutPoint, OnClickRemoveConnection));
+        graph.edges.Add(new Connection(selectedInPoint, selectedOutPoint, OnClickRemoveConnection));
     }
 
     private void ClearConnectionSelection()

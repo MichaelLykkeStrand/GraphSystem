@@ -2,24 +2,26 @@ using System;
 using UnityEditor;
 using UnityEngine;
 
+[System.Serializable]
 public class Connection
 {
     public NodeTransition condition;
+    [SerializeReference]
     public ConnectionPoint inPoint;
+    [SerializeReference]
     public ConnectionPoint outPoint;
-    public Action<Connection> OnClickRemoveConnection;
-    public Rect rect;
     private GUIStyle style;
     private int width = 150;
     private int height = 20;
-    public Connection(ConnectionPoint inPoint, ConnectionPoint outPoint, Action<Connection> OnClickRemoveConnection)
+
+    public Action<Connection> OnClickRemoveConnection;
+    public Rect rect;
+    public Connection(ConnectionPoint inPoint, ConnectionPoint outPoint)
     {
         style = new GUIStyle();
         style.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node1.png") as Texture2D;
         style.border = new RectOffset(12, 12, 12, 12);
-        this.inPoint = inPoint;
-        this.outPoint = outPoint;
-        this.OnClickRemoveConnection = OnClickRemoveConnection;
+
     }
 
     public void Draw()
