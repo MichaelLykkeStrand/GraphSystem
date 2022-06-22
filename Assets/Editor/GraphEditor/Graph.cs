@@ -4,6 +4,24 @@ using UnityEngine;
 
 public class Graph : ScriptableObject
 {
-    public List<Node> nodes;
-    public List<Edge> edges;
+    private List<Node> nodes;
+    private List<Edge> edges;
+
+    public List<Edge> Edges { get => edges; set => edges = value; }
+    public List<Node> Nodes { get => nodes; set => nodes = value; }
+
+    public void Connect(Node fromNode, Node toNode)
+    {
+
+    }
+
+    public void Disconnect(Node fromNode, Node toNode)
+    {
+
+    }
+
+    public void Add(Node node)
+    {
+        this.nodes.Add(node);
+    }
 }

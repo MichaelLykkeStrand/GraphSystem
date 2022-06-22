@@ -26,8 +26,8 @@ public class GraphEditor : EditorWindow
     private void OnEnable()
     {
         graph = ScriptableObject.CreateInstance<Graph>();
-        graph.edges = new List<Edge>();
-        graph.nodes = new List<Node>();
+        graph.Edges = new List<Edge>();
+        graph.Nodes = new List<Node>();
     }
 
     private void OnGUI()
@@ -119,22 +119,22 @@ public class GraphEditor : EditorWindow
 
     private void DrawNodes()
     {
-        if (graph.nodes != null)
+        if (graph.Nodes != null)
         {
-            for (int i = 0; i < graph.nodes.Count; i++)
+            for (int i = 0; i < graph.Nodes.Count; i++)
             {
-                graph.nodes[i].Draw();
+                graph.Nodes[i].Draw();
             }
         }
     }
 
     private void DrawConnections()
     {
-        if (graph.edges != null)
+        if (graph.Edges != null)
         {
-            for (int i = 0; i < graph.edges.Count; i++)
+            for (int i = 0; i < graph.Edges.Count; i++)
             {
-                graph.edges[i].Draw();
+                graph.Edges[i].Draw();
             }
         }
     }
@@ -168,11 +168,11 @@ public class GraphEditor : EditorWindow
 
     private void ProcessNodeEvents(Event e)
     {
-        if (graph.nodes != null)
+        if (graph.Nodes != null)
         {
-            for (int i = graph.nodes.Count - 1; i >= 0; i--)
+            for (int i = graph.Nodes.Count - 1; i >= 0; i--)
             {
-                bool guiChanged = graph.nodes[i].ProcessEvents(e);
+                bool guiChanged = graph.Nodes[i].ProcessEvents(e);
 
                 if (guiChanged)
                 {
@@ -226,11 +226,11 @@ public class GraphEditor : EditorWindow
     {
         drag = delta;
 
-        if (graph.nodes != null)
+        if (graph.Nodes != null)
         {
-            for (int i = 0; i < graph.nodes.Count; i++)
+            for (int i = 0; i < graph.Nodes.Count; i++)
             {
-                graph.nodes[i].Drag(delta);
+                graph.Nodes[i].Drag(delta);
             }
         }
 
@@ -239,7 +239,7 @@ public class GraphEditor : EditorWindow
 
     private void OnClickAddNode(Vector2 mousePosition)
     {
-        graph.nodes.Add(new NodeController(mousePosition, 180, 100, OnClickInPoint, OnClickOutPoint, OnClickRemoveNode));
+        graph.Nodes.Add(new NodeController(mousePosition, 180, 100, OnClickInPoint, OnClickOutPoint, OnClickRemoveNode));
     }
 
     private void OnClickInPoint(ConnectionPoint inPoint)
@@ -280,37 +280,37 @@ public class GraphEditor : EditorWindow
 
     private void OnClickRemoveNode(NodeController node)
     {
-        if (graph.edges != null)
+        if (graph.Edges != null)
         {
             List<Connection> connectionsToRemove = new List<Connection>();
 
-            for (int i = 0; i < graph.edges.Count; i++)
+            for (int i = 0; i < graph.Edges.Count; i++)
             {
-                if (graph.edges[i].FromNode == node.inPoint || graph.edges[i].ToNode == node.outPoint)
+                if (graph.Edges[i].FromNode == node.inPoint || graph.Edges[i].ToNode == node.outPoint)
                 {
-                    connectionsToRemove.Add(graph.edges[i]);
+                    connectionsToRemove.Add(graph.Edges[i]);
                 }
             }
 
             for (int i = 0; i < connectionsToRemove.Count; i++)
             {
-                graph.edges.Remove(connectionsToRemove[i]);
+                graph.Edges.Remove(connectionsToRemove[i]);
             }
 
             connectionsToRemove = null;
         }
 
-        graph.nodes.Remove(node);
+        graph.Nodes.Remove(node);
     }
 
     private void OnClickRemoveConnection(Connection connection)
     {
-        graph.edges.Remove(connection);
+        graph.Edges.Remove(connection);
     }
 
     private void CreateConnection()
     {
-        graph.edges.Add(new Connection(selectedInPoint, selectedOutPoint, OnClickRemoveConnection));
+        graph.Edges.Add(new Connection(selectedInPoint, selectedOutPoint, OnClickRemoveConnection));
     }
 
     private void ClearConnectionSelection()
