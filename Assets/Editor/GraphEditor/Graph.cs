@@ -12,16 +12,26 @@ public class Graph : ScriptableObject
 
     public void Connect(Node fromNode, Node toNode)
     {
-
+        foreach (var edge in edges)
+        {
+            if(edge.FromNode == fromNode && edge.ToNode == toNode)
+            {
+                return;
+            }
+        }
+        edges.Add(new Edge(fromNode, toNode));
     }
 
     public void Disconnect(Node fromNode, Node toNode)
     {
-
-    }
-
-    public void Add(Node node)
-    {
-        this.nodes.Add(node);
+        Edge edgeToRemove = null;
+        foreach (var edge in edges)
+        {
+            if(edge.FromNode == fromNode && edge.ToNode == toNode)
+            {
+                edgeToRemove = edge;
+            }
+        }
+        edges.Remove(edgeToRemove);
     }
 }
