@@ -5,14 +5,14 @@ using UnityEngine;
 [System.Serializable]
 public class Node
 {
-    public Rect rect;
-    public ConnectionPoint inPoint;
-    public ConnectionPoint outPoint;
+    [SerializeField]
+    Vector2 position;
+    NodeData data;
 
-    public Node(Vector2 position, float width, float height)
+    public Node(Vector2 position)
     {
-        rect = new Rect(position.x, position.y, width, height);
-        inPoint = new ConnectionPoint(ConnectionPointType.In);
-        outPoint = new ConnectionPoint(ConnectionPointType.Out);
+        this.position = position;
     }
+
+    public NodeData Data { get => data; set => data = value; }
 }

@@ -8,12 +8,16 @@ public class Edge
     [SerializeReference]
     public NodeTransition condition;
     [SerializeReference]
-    public Node fromNode;
+    private Node fromNode;
     [SerializeReference]
-    public Node toNode;
+    private Node toNode;
+
+    public Node FromNode { get => fromNode; set => fromNode = value; }
+    public Node ToNode { get => toNode; set => toNode = value; }
+
     public Edge(Node inPoint, Node outPoint)
     {
-        this.fromNode = inPoint;
-        this.toNode = outPoint;
+        this.FromNode = inPoint;
+        this.ToNode = outPoint;
     }
 }

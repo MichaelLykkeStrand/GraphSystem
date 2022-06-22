@@ -26,7 +26,7 @@ public class GraphEditor : EditorWindow
     private void OnEnable()
     {
         graph = ScriptableObject.CreateInstance<Graph>();
-        graph.connections = new List<Connection>();
+        graph.edges = new List<Edge>();
         graph.nodes = new List<Node>();
     }
 
@@ -286,7 +286,7 @@ public class GraphEditor : EditorWindow
 
             for (int i = 0; i < graph.edges.Count; i++)
             {
-                if (graph.edges[i].fromNode == node.inPoint || graph.edges[i].toNode == node.outPoint)
+                if (graph.edges[i].FromNode == node.inPoint || graph.edges[i].ToNode == node.outPoint)
                 {
                     connectionsToRemove.Add(graph.edges[i]);
                 }
