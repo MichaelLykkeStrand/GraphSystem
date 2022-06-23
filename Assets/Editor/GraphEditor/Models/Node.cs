@@ -6,13 +6,15 @@ using UnityEngine;
 public class Node
 {
     [SerializeField]
-    Vector2 position;
-    NodeData data;
+    private Rect rect;
+    [SerializeField]
+    protected NodeData data;
 
     public Node(Vector2 position)
     {
-        this.position = position;
+        this.Rect = new Rect(position.x,position.y,100,100);
     }
 
     public NodeData Data { get => data; set => data = value; }
+    public Rect Rect { get => rect; set => rect = value; }
 }

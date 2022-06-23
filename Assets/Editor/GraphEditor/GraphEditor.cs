@@ -119,13 +119,17 @@ public class GraphEditor : EditorWindow
 
     private void DrawNodes()
     {
-        if (graph.Nodes != null)
+        foreach (Node node in graph.Nodes)
         {
-            for (int i = 0; i < graph.Nodes.Count; i++)
-            {
-                graph.Nodes[i].Draw();
-            }
+            DrawNode(node);
         }
+    }
+
+    private void DrawNode(Node node)
+    {
+        GUILayout.BeginArea(node.Rect, GraphGUIStyles.DefaultNodeStyle());
+        node.Data = EditorGUILayout.ObjectField(node.Data, typeof(NodeData), true) as NodeData;
+        GUILayout.EndArea();
     }
 
     private void DrawConnections()
@@ -137,6 +141,11 @@ public class GraphEditor : EditorWindow
                 graph.Edges[i].Draw();
             }
         }
+    }
+
+    private void DrawEdge()
+    {
+
     }
 
     private void ProcessEvents(Event e)

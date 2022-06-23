@@ -34,4 +34,16 @@ public class Graph : ScriptableObject
         }
         edges.Remove(edgeToRemove);
     }
+
+    public Node GetNodeAtPosition(Vector2 position)
+    {
+        foreach(Node node in nodes)
+        {
+            if (node.Rect.Contains(position))
+            {
+                return node;
+            }
+        }
+        throw new NoNodeFoundException();
+    }
 }
