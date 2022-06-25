@@ -35,6 +35,11 @@ public class Graph : ScriptableObject
         edges.Remove(edgeToRemove);
     }
 
+    public void Disconnect(Edge edge)
+    {
+        edges.Remove(edge);
+    }
+
     public Node GetNodeAtPosition(Vector2 position)
     {
         foreach(Node node in nodes)

@@ -136,16 +136,37 @@ public class GraphEditor : EditorWindow
     {
         if (graph.Edges != null)
         {
-            for (int i = 0; i < graph.Edges.Count; i++)
+            foreach (Edge edge in graph.Edges)
             {
-                graph.Edges[i].Draw();
+                DrawEdge(edge);
             }
         }
     }
 
-    private void DrawEdge()
+    private void DrawEdge(Edge edge)
     {
+        int width = 150;
+        int height = 20;
+        Vector2 center = (edge.FromNode.Rect.center + edge.ToNode.Rect.center) * 0.5f;
+        Rect rect = new Rect(center.x - width / 2, center.y, width, height);
+        Handles.DrawBezier(
+            edge.FromNode.Rect.center,
+            edge.ToNode.Rect.center,
+            edge.FromNode.Rect.center + Vector2.left * 50f,
+            edge.ToNode.Rect.center - Vector2.left * 50f,
+            Color.white,
+            null,
+            2f
+        );
 
+        if (Handles.Button(center, Quaternion.identity, 4, 8, Handles.RectangleHandleCap))
+        {
+            graph.Disconnect(edge);
+        }
+
+        GUILayout.BeginArea(rect, GraphGUIStyles.EdgeStyle());
+        edge.condition = EditorGUILayout.ObjectField(edge.condition, typeof(NodeTransition), true) as NodeTransition;
+        GUILayout.EndArea();
     }
 
     private void ProcessEvents(Event e)
