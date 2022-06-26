@@ -2,9 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class Graph : ScriptableObject
 {
+    [SerializeField]
     private List<Node> nodes;
+    [SerializeField]
     private List<Edge> edges;
 
     public List<Edge> Edges { get => edges; set => edges = value; }
@@ -38,6 +41,17 @@ public class Graph : ScriptableObject
     public void Disconnect(Edge edge)
     {
         edges.Remove(edge);
+    }
+
+    public void Remove(Node node)
+    {
+        foreach(Edge edge in edges)
+        {
+            if(edge.FromNode == node || edge.ToNode == node)
+            {
+                Disconnect(edge);
+            }
+        }
     }
 
     public Node GetNodeAtPosition(Vector2 position)

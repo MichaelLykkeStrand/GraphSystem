@@ -7,8 +7,8 @@ public class GraphEditor : EditorWindow
 {
     private Graph graph;
 
-    private ConnectionPoint selectedInPoint;
-    private ConnectionPoint selectedOutPoint;
+    private Node selectedInPoint;
+    private Node selectedOutPoint;
 
     private Vector2 offset;
     private Vector2 drag;
@@ -202,12 +202,7 @@ public class GraphEditor : EditorWindow
         {
             for (int i = graph.Nodes.Count - 1; i >= 0; i--)
             {
-                bool guiChanged = graph.Nodes[i].ProcessEvents(e);
-
-                if (guiChanged)
-                {
-                    GUI.changed = true;
-                }
+                //bool guiChanged = graph.Nodes[i].ProcessEvents(e);
             }
         }
     }
@@ -217,9 +212,9 @@ public class GraphEditor : EditorWindow
         if (selectedInPoint != null && selectedOutPoint == null)
         {
             Handles.DrawBezier(
-                selectedInPoint.rect.center,
+                selectedInPoint.Rect.center,
                 e.mousePosition,
-                selectedInPoint.rect.center + Vector2.left * 50f,
+                selectedInPoint.Rect.center + Vector2.left * 50f,
                 e.mousePosition - Vector2.left * 50f,
                 Color.white,
                 null,
@@ -232,9 +227,9 @@ public class GraphEditor : EditorWindow
         if (selectedOutPoint != null && selectedInPoint == null)
         {
             Handles.DrawBezier(
-                selectedOutPoint.rect.center,
+                selectedOutPoint.Rect.center,
                 e.mousePosition,
-                selectedOutPoint.rect.center - Vector2.left * 50f,
+                selectedOutPoint.Rect.center - Vector2.left * 50f,
                 e.mousePosition + Vector2.left * 50f,
                 Color.white,
                 null,
@@ -256,12 +251,9 @@ public class GraphEditor : EditorWindow
     {
         drag = delta;
 
-        if (graph.Nodes != null)
+        foreach(Node node in graph.Nodes)
         {
-            for (int i = 0; i < graph.Nodes.Count; i++)
-            {
-                graph.Nodes[i].Drag(delta);
-            }
+            node.Position += delta;
         }
 
         GUI.changed = true;
@@ -269,78 +261,18 @@ public class GraphEditor : EditorWindow
 
     private void OnClickAddNode(Vector2 mousePosition)
     {
-        graph.Nodes.Add(new NodeController(mousePosition, 180, 100, OnClickInPoint, OnClickOutPoint, OnClickRemoveNode));
+        graph.Nodes.Add(new Node(mousePosition));
     }
 
-    private void OnClickInPoint(ConnectionPoint inPoint)
+
+    private void OnClickRemoveNode(Node node)
     {
-        selectedInPoint = inPoint;
-
-        if (selectedOutPoint != null)
-        {
-            if (selectedOutPoint.node != selectedInPoint.node)
-            {
-                CreateConnection();
-                ClearConnectionSelection();
-            }
-            else
-            {
-                ClearConnectionSelection();
-            }
-        }
-    }
-
-    private void OnClickOutPoint(ConnectionPoint outPoint)
-    {
-        selectedOutPoint = outPoint;
-
-        if (selectedInPoint != null)
-        {
-            if (selectedOutPoint.node != selectedInPoint.node)
-            {
-                CreateConnection();
-                ClearConnectionSelection();
-            }
-            else
-            {
-                ClearConnectionSelection();
-            }
-        }
-    }
-
-    private void OnClickRemoveNode(NodeController node)
-    {
-        if (graph.Edges != null)
-        {
-            List<Connection> connectionsToRemove = new List<Connection>();
-
-            for (int i = 0; i < graph.Edges.Count; i++)
-            {
-                if (graph.Edges[i].FromNode == node.inPoint || graph.Edges[i].ToNode == node.outPoint)
-                {
-                    connectionsToRemove.Add(graph.Edges[i]);
-                }
-            }
-
-            for (int i = 0; i < connectionsToRemove.Count; i++)
-            {
-                graph.Edges.Remove(connectionsToRemove[i]);
-            }
-
-            connectionsToRemove = null;
-        }
-
-        graph.Nodes.Remove(node);
-    }
-
-    private void OnClickRemoveConnection(Connection connection)
-    {
-        graph.Edges.Remove(connection);
+        graph.Remove(node);
     }
 
     private void CreateConnection()
     {
-        graph.Edges.Add(new Connection(selectedInPoint, selectedOutPoint, OnClickRemoveConnection));
+        graph.Edges.Add(new Edge(selectedInPoint, selectedOutPoint));
     }
 
     private void ClearConnectionSelection()

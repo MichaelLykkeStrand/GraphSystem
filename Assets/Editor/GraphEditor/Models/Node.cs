@@ -7,7 +7,7 @@ public class Node
 {
     [SerializeField]
     private Rect rect;
-    [SerializeField]
+    [SerializeReference]
     protected NodeData data;
 
     public Node(Vector2 position)
@@ -17,4 +17,6 @@ public class Node
 
     public NodeData Data { get => data; set => data = value; }
     public Rect Rect { get => rect; set => rect = value; }
+
+    public Vector2 Position { get => rect.position; set => rect.position = value; }
 }
