@@ -179,6 +179,7 @@ public class GraphEditor : EditorWindow
                 if (e.button == 0)
                 {
                     ClearConnectionSelection();
+                    selectedInPoint = graph.GetNodeAtPosition(e.mousePosition);
                 }
 
                 if (e.button == 1)
