@@ -134,12 +134,9 @@ public class GraphEditor : EditorWindow
 
     private void DrawConnections()
     {
-        if (graph.Edges != null)
+        foreach (Edge edge in new List<Edge>(graph.Edges))
         {
-            foreach (Edge edge in graph.Edges)
-            {
-                DrawEdge(edge);
-            }
+            DrawEdge(edge);
         }
     }
 
@@ -178,8 +175,23 @@ public class GraphEditor : EditorWindow
             case EventType.MouseDown:
                 if (e.button == 0)
                 {
-                    ClearConnectionSelection();
-                    selectedInPoint = graph.GetNodeAtPosition(e.mousePosition);
+                    try{
+                        graph.GetNodeAtPosition(e.mousePosition);
+                        if(selectedInPoint == null)
+                        {
+                            selectedInPoint = graph.GetNodeAtPosition(e.mousePosition);
+                        } else if( selectedOutPoint == null)
+                        {
+                            selectedOutPoint = graph.GetNodeAtPosition(e.mousePosition);
+                            graph.Connect(selectedInPoint, selectedOutPoint);
+                            ClearConnectionSelection();
+                        }
+                    }
+                    catch(NoNodeFoundException)
+                    {
+                        ClearConnectionSelection();
+                    }
+
                 }
 
                 if (e.button == 1)
@@ -217,21 +229,6 @@ public class GraphEditor : EditorWindow
                 e.mousePosition,
                 selectedInPoint.Rect.center + Vector2.left * 50f,
                 e.mousePosition - Vector2.left * 50f,
-                Color.white,
-                null,
-                2f
-            );
-
-            GUI.changed = true;
-        }
-
-        if (selectedOutPoint != null && selectedInPoint == null)
-        {
-            Handles.DrawBezier(
-                selectedOutPoint.Rect.center,
-                e.mousePosition,
-                selectedOutPoint.Rect.center - Vector2.left * 50f,
-                e.mousePosition + Vector2.left * 50f,
                 Color.white,
                 null,
                 2f

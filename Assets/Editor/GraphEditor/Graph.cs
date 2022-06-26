@@ -5,9 +5,9 @@ using UnityEngine;
 [System.Serializable]
 public class Graph : ScriptableObject
 {
-    [SerializeField]
+    [SerializeReference]
     private List<Node> nodes;
-    [SerializeField]
+    [SerializeReference]
     private List<Edge> edges;
 
     public List<Edge> Edges { get => edges; set => edges = value; }
