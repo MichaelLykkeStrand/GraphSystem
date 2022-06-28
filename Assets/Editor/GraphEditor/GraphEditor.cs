@@ -82,23 +82,24 @@ public class GraphEditor : EditorWindow
         try
         {
         NodeTransition[] nodeTransitons = GameObject.FindObjectsOfType<NodeTransition>();
-        foreach (Edge edge in graph.Edges)
-        {
+        Console.WriteLine("Populating node transitions: "+nodeTransitons.Length, MessageType.Info);            
             foreach (NodeTransition nodeTransition in nodeTransitons)
             {
-                if (nodeTransition.ID == edge.condition.ID)
+                foreach (Edge edge in graph.Edges)
                 {
-                    edge.condition = nodeTransition;
+                    if (nodeTransition.ID == edge.transitionID)
+                    {
+                        edge.condition = nodeTransition;
+                    }
                 }
             }
         }
-        }
         catch (Exception e)
         {
-            EditorGUILayout.HelpBox("Unable to populate node transitions. Are you in the correct scene?", MessageType.Error);
+            Console.WriteLine("Unable to populate node transitions. Are you in the correct scene?", MessageType.Error);
         }
     }
-
+    
     private void SaveGraph()
     {
         string absPath = EditorUtility.SaveFilePanel("Save Graph", "", "graph","asset");
@@ -189,6 +190,13 @@ public class GraphEditor : EditorWindow
 
         GUILayout.BeginArea(rect, GraphGUIStyles.EdgeStyle());
         edge.condition = EditorGUILayout.ObjectField(edge.condition, typeof(NodeTransition), true) as NodeTransition;
+        if (edge.condition != null)
+        {
+            if (edge.condition.ID != edge.transitionID)
+            {
+                edge.transitionID = edge.condition.ID;
+            }
+        }
         GUILayout.EndArea();
     }
 

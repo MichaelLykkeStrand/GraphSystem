@@ -1,11 +1,16 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using UnityEngine;
 
 [System.Serializable]
 public class Edge
 {
-    [SerializeReference]
+    [SerializeField]
+    public string transitionID;
+
+    [NonSerialized]
     public NodeTransition condition;
     [SerializeReference]
     private Node fromNode;
