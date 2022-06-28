@@ -77,6 +77,7 @@ public class GraphEditor : EditorWindow
         PopulateNodeTransitionReferences();
     }
 
+    //move to own graph.cs
     private void PopulateNodeTransitionReferences()
     {
         try
