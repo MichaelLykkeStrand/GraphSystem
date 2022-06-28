@@ -13,6 +13,8 @@ public class GraphEditor : EditorWindow
     private Vector2 offset;
     private Vector2 drag;
 
+    private Node selectedNode;
+
     private int toolbarInt = -1;
     public string[] toolbarStrings = new string[] { "Open", "Save"};
 
@@ -25,6 +27,7 @@ public class GraphEditor : EditorWindow
 
     private void OnEnable()
     {
+        //Replace with builder pattern
         graph = ScriptableObject.CreateInstance<Graph>();
         graph.Edges = new List<Edge>();
         graph.Nodes = new List<Node>();
@@ -71,13 +74,37 @@ public class GraphEditor : EditorWindow
         string absPath = EditorUtility.OpenFilePanel("Select Graph","", "asset");
         string relativePath = absPath.Substring(absPath.IndexOf("Assets/"));
         this.graph = AssetDatabase.LoadAssetAtPath<Graph>(relativePath);
-
+        PopulateNodeTransitionReferences();
     }
+
+    private void PopulateNodeTransitionReferences()
+    {
+        try
+        {
+        NodeTransition[] nodeTransitons = GameObject.FindObjectsOfType<NodeTransition>();
+        foreach (Edge edge in graph.Edges)
+        {
+            foreach (NodeTransition nodeTransition in nodeTransitons)
+            {
+                if (nodeTransition.ID == edge.condition.ID)
+                {
+                    edge.condition = nodeTransition;
+                }
+            }
+        }
+        }
+        catch (Exception e)
+        {
+            EditorGUILayout.HelpBox("Unable to populate node transitions. Are you in the correct scene?", MessageType.Error);
+        }
+    }
+
     private void SaveGraph()
     {
         string absPath = EditorUtility.SaveFilePanel("Save Graph", "", "graph","asset");
         string relativePath = absPath.Substring(absPath.IndexOf("Assets/"));
         AssetDatabase.CreateAsset(graph, relativePath);
+        AssetDatabase.SaveAssets();
     }
 
     private void DrawTools()
@@ -140,8 +167,7 @@ public class GraphEditor : EditorWindow
         }
     }
 
-    private void DrawEdge(Edge edge)
-    {
+    private void DrawEdge(Edge edge) { 
         int width = 150;
         int height = 20;
         Vector2 center = (edge.FromNode.Rect.center + edge.ToNode.Rect.center) * 0.5f;
@@ -191,7 +217,6 @@ public class GraphEditor : EditorWindow
                     {
                         ClearConnectionSelection();
                     }
-
                 }
 
                 if (e.button == 1)
@@ -233,7 +258,6 @@ public class GraphEditor : EditorWindow
                 null,
                 2f
             );
-
             GUI.changed = true;
         }
     }
@@ -259,13 +283,13 @@ public class GraphEditor : EditorWindow
 
     private void OnClickAddNode(Vector2 mousePosition)
     {
-        graph.Nodes.Add(new Node(mousePosition));
+        graph.AddNode(new Node(mousePosition));
     }
 
 
     private void OnClickRemoveNode(Node node)
     {
-        graph.Remove(node);
+        graph.RemoveNode(node);
     }
 
     private void CreateConnection()

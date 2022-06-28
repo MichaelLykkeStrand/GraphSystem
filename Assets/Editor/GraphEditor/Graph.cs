@@ -65,4 +65,18 @@ public class Graph : ScriptableObject
         }
         throw new NoNodeFoundException();
     }
+    public void MoveNode(Node node, Vector2 position)
+    {
+        node.Position = position;
+    }
+
+    public void AddNode(Node node)
+    {
+        nodes.Add(node);
+    }
+
+    public void RemoveNode(Node node)
+    {
+        nodes.Remove(node);
+    }
 }
