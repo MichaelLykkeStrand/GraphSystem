@@ -5,12 +5,13 @@ using System.Runtime.Serialization;
 using UnityEngine;
 
 [System.Serializable]
+[SerializeableReferences]
 public class Edge
 {
     [SerializeField]
     public string transitionID;
 
-    [NonSerialized]
+    [SerializeSceneReference]
     public NodeTransition condition;
     [SerializeReference]
     private Node fromNode;

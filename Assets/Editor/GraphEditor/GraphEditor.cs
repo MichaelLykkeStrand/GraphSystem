@@ -74,11 +74,11 @@ public class GraphEditor : EditorWindow
         string absPath = EditorUtility.OpenFilePanel("Select Graph","", "asset");
         string relativePath = absPath.Substring(absPath.IndexOf("Assets/"));
         this.graph = AssetDatabase.LoadAssetAtPath<Graph>(relativePath);
-        PopulateNodeTransitionReferences();
+        PopulateReferences();
     }
 
     //move to own graph.cs
-    private void PopulateNodeTransitionReferences()
+    private void PopulateReferences()
     {
         try
         {
@@ -191,13 +191,6 @@ public class GraphEditor : EditorWindow
 
         GUILayout.BeginArea(rect, GraphGUIStyles.EdgeStyle());
         edge.condition = EditorGUILayout.ObjectField(edge.condition, typeof(NodeTransition), true) as NodeTransition;
-        if (edge.condition != null)
-        {
-            if (edge.condition.ID != edge.transitionID)
-            {
-                edge.transitionID = edge.condition.ID;
-            }
-        }
         GUILayout.EndArea();
     }
 
