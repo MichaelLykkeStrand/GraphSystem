@@ -63,6 +63,11 @@ public class NodeController
         }
     }
 
+    public bool HasSelectedNode(){
+        if(selectedNode == null) return false;
+        return true;
+    }
+
     private void ClearNodeSelection()
     {
         SelectedNode = null;

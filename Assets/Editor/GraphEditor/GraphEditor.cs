@@ -7,6 +7,7 @@ public class GraphEditor : EditorWindow
 {
     private Graph graph;
     private NodeController nodeController;
+    private GridController gridController;
 
     private Node selectedInPoint;
     private Node selectedOutPoint;
@@ -36,6 +37,7 @@ public class GraphEditor : EditorWindow
         graph.Edges = new List<Edge>();
         graph.Nodes = new List<Node>();
         nodeController = new NodeController(graph);
+        gridController = new GridController();
     }
 
     private void OnGUI()
@@ -45,6 +47,7 @@ public class GraphEditor : EditorWindow
         DrawGrid(20, 0.2f, Color.gray);
         DrawGrid(100, 0.4f, Color.gray);
 
+        ProcessEvents(Event.current);
         nodeController.DrawNodes();
         nodeController.ProcessNodeEvents(Event.current);
         DrawConnections();
@@ -52,7 +55,7 @@ public class GraphEditor : EditorWindow
         DrawConnectionLine(Event.current);
 
 
-        ProcessEvents(Event.current);
+
         ProcessToolStrip();
 
         if (GUI.changed) Repaint();
@@ -90,6 +93,8 @@ public class GraphEditor : EditorWindow
         }
 
     }
+
+
 
     //move to own graph.cs
     private void PopulateNodeTransitionReferences()
@@ -136,30 +141,7 @@ public class GraphEditor : EditorWindow
         toolbarInt = GUI.Toolbar(new Rect(25, 25, 250, 30), toolbarInt, toolbarStrings);
     }
 
-    private void DrawGrid(float gridSpacing, float gridOpacity, Color gridColor)
-    {
-        int widthDivs = Mathf.CeilToInt(position.width / gridSpacing);
-        int heightDivs = Mathf.CeilToInt(position.height / gridSpacing);
 
-        Handles.BeginGUI();
-        Handles.color = new Color(gridColor.r, gridColor.g, gridColor.b, gridOpacity);
-
-        offset += drag * 0.5f;
-        Vector3 newOffset = new Vector3(offset.x % gridSpacing, offset.y % gridSpacing, 0);
-
-        for (int i = 0; i < widthDivs; i++)
-        {
-            Handles.DrawLine(new Vector3(gridSpacing * i, -gridSpacing, 0) + newOffset, new Vector3(gridSpacing * i, position.height, 0f) + newOffset);
-        }
-
-        for (int j = 0; j < heightDivs; j++)
-        {
-            Handles.DrawLine(new Vector3(-gridSpacing, gridSpacing * j, 0) + newOffset, new Vector3(position.width, gridSpacing * j, 0f) + newOffset);
-        }
-
-        Handles.color = Color.white;
-        Handles.EndGUI();
-    }
 
 
 
@@ -214,10 +196,10 @@ public class GraphEditor : EditorWindow
                 {
                     try{
                         graph.GetNodeAtPosition(e.mousePosition);
-                        if(selectedInPoint == null)
+                        if(selectedInPoint == null && nodeController.HasSelectedNode())
                         {
                             selectedInPoint = graph.GetNodeAtPosition(e.mousePosition);
-                        } else if( selectedOutPoint == null)
+                        } else if(selectedInPoint != null && selectedOutPoint == null)
                         {
                             selectedOutPoint = graph.GetNodeAtPosition(e.mousePosition);
                             graph.Connect(selectedInPoint, selectedOutPoint);
@@ -274,10 +256,6 @@ public class GraphEditor : EditorWindow
         drag = delta;
 
         //Remove
-        foreach(Node node in graph.Nodes)
-        {
-            node.Position += delta;
-        }
 
         GUI.changed = true;
     }
