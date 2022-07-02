@@ -6,6 +6,7 @@ using System;
 public class GraphEditor : EditorWindow
 {
     private Graph graph;
+    private NodeController nodeController;
 
     private Node selectedInPoint;
     private Node selectedOutPoint;
@@ -13,7 +14,6 @@ public class GraphEditor : EditorWindow
     private Vector2 offset;
     private Vector2 drag;
 
-    private Node selectedNode;
 
     private int toolbarInt = -1;
     public string[] toolbarStrings = new string[] { "Open", "Save"};
@@ -27,10 +27,15 @@ public class GraphEditor : EditorWindow
 
     private void OnEnable()
     {
+        NewEmptyGraph();
+    }
+
+    private void NewEmptyGraph() {
         //Replace with builder pattern
         graph = ScriptableObject.CreateInstance<Graph>();
         graph.Edges = new List<Edge>();
         graph.Nodes = new List<Node>();
+        nodeController = new NodeController(graph);
     }
 
     private void OnGUI()
@@ -40,12 +45,13 @@ public class GraphEditor : EditorWindow
         DrawGrid(20, 0.2f, Color.gray);
         DrawGrid(100, 0.4f, Color.gray);
 
-        DrawNodes();
+        nodeController.DrawNodes();
+        nodeController.ProcessNodeEvents(Event.current);
         DrawConnections();
 
         DrawConnectionLine(Event.current);
 
-        ProcessNodeEvents(Event.current);
+
         ProcessEvents(Event.current);
         ProcessToolStrip();
 
@@ -70,11 +76,19 @@ public class GraphEditor : EditorWindow
     }
     private void OpenGraph()
     {
-        AssetDatabase.Refresh();
-        string absPath = EditorUtility.OpenFilePanel("Select Graph","", "asset");
-        string relativePath = absPath.Substring(absPath.IndexOf("Assets/"));
-        this.graph = AssetDatabase.LoadAssetAtPath<Graph>(relativePath);
-        PopulateNodeTransitionReferences();
+        try
+        {
+            AssetDatabase.Refresh();
+            string absPath = EditorUtility.OpenFilePanel("Select Graph", "", "asset");
+            string relativePath = absPath.Substring(absPath.IndexOf("Assets/"));
+            this.graph = AssetDatabase.LoadAssetAtPath<Graph>(relativePath);
+            PopulateNodeTransitionReferences();
+            nodeController = new NodeController(graph);
+        }
+        catch (Exception)
+        {
+        }
+
     }
 
     //move to own graph.cs
@@ -83,7 +97,7 @@ public class GraphEditor : EditorWindow
         try
         {
         NodeTransition[] nodeTransitons = GameObject.FindObjectsOfType<NodeTransition>();
-        Console.WriteLine("Populating node transitions: "+nodeTransitons.Length, MessageType.Info);            
+        Debug.Log("Populating node transitions: "+nodeTransitons.Length);            
             foreach (NodeTransition nodeTransition in nodeTransitons)
             {
                 foreach (Edge edge in graph.Edges)
@@ -97,7 +111,8 @@ public class GraphEditor : EditorWindow
         }
         catch (Exception e)
         {
-            Console.WriteLine("Unable to populate node transitions. Are you in the correct scene?", MessageType.Error);
+            Debug.Log("Unable to populate node transitions. Are you in the correct scene?");
+            NewEmptyGraph();
         }
     }
     
@@ -146,20 +161,7 @@ public class GraphEditor : EditorWindow
         Handles.EndGUI();
     }
 
-    private void DrawNodes()
-    {
-        foreach (Node node in graph.Nodes)
-        {
-            DrawNode(node);
-        }
-    }
 
-    private void DrawNode(Node node)
-    {
-        GUILayout.BeginArea(node.Rect, GraphGUIStyles.DefaultNodeStyle());
-        node.Data = EditorGUILayout.ObjectField(node.Data, typeof(NodeData), true) as NodeData;
-        GUILayout.EndArea();
-    }
 
     private void DrawConnections()
     {
@@ -243,17 +245,6 @@ public class GraphEditor : EditorWindow
         }
     }
 
-    private void ProcessNodeEvents(Event e)
-    {
-        if (graph.Nodes != null)
-        {
-            for (int i = graph.Nodes.Count - 1; i >= 0; i--)
-            {
-                //bool guiChanged = graph.Nodes[i].ProcessEvents(e);
-            }
-        }
-    }
-
     private void DrawConnectionLine(Event e)
     {
         if (selectedInPoint != null && selectedOutPoint == null)
@@ -282,6 +273,7 @@ public class GraphEditor : EditorWindow
     {
         drag = delta;
 
+        //Remove
         foreach(Node node in graph.Nodes)
         {
             node.Position += delta;
