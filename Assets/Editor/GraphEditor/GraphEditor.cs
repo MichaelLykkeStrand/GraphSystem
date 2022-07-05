@@ -37,15 +37,15 @@ public class GraphEditor : EditorWindow
         graph.Edges = new List<Edge>();
         graph.Nodes = new List<Node>();
         nodeController = new NodeController(graph);
-        gridController = new GridController();
+        gridController = new GridController(this);
     }
 
     private void OnGUI()
     {
         DrawTools();
 
-        DrawGrid(20, 0.2f, Color.gray);
-        DrawGrid(100, 0.4f, Color.gray);
+        gridController.DrawGrid(offset,20, 0.2f, Color.gray);
+        gridController.DrawGrid(offset,100, 0.4f, Color.gray);
 
         ProcessEvents(Event.current);
         nodeController.DrawNodes();
