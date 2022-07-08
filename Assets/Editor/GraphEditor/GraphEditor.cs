@@ -8,13 +8,13 @@ public class GraphEditor : EditorWindow
     private Graph graph;
     private NodeController nodeController;
     private GridController gridController;
+    private EdgeController edgeController;
 
     private Node selectedInPoint;
     private Node selectedOutPoint;
 
     private Vector2 offset;
     private Vector2 drag;
-
 
     private int toolbarInt = -1;
     public string[] toolbarStrings = new string[] { "Open", "Save"};
@@ -37,6 +37,7 @@ public class GraphEditor : EditorWindow
         graph.Edges = new List<Edge>();
         graph.Nodes = new List<Node>();
         nodeController = new NodeController(graph);
+        edgeController = new EdgeController(graph);
         gridController = new GridController(this);
     }
 
@@ -77,6 +78,7 @@ public class GraphEditor : EditorWindow
 
         toolbarInt = -1;
     }
+    //TODO update this and move the nodeController creation to a new function that includes edgecontroller etc.
     private void OpenGraph()
     {
         try
