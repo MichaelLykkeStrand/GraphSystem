@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-public class NodeController
+public class NodeController : IGridDrawable
 {
     private Graph graph;
     private Node selectedNode;
@@ -17,7 +17,7 @@ public class NodeController
     public Graph Graph { get => graph; set => graph = value; }
     public Node SelectedNode { get => selectedNode; set => selectedNode = value; }
 
-    public void DrawNodes()
+    private void DrawNodes()
     {
         foreach (Node node in Graph.Nodes)
         {
@@ -82,5 +82,10 @@ public class NodeController
     private void ProcessNodeClick(Node node)
     {
         this.SelectedNode = node;
+    }
+
+    public void Draw()
+    {
+        this.DrawNodes();
     }
 }

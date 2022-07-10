@@ -49,14 +49,10 @@ public class GraphEditor : EditorWindow
         gridController.DrawGrid(offset,100, 0.4f, Color.gray);
 
         ProcessEvents(Event.current);
-        nodeController.DrawNodes();
+        nodeController.Draw();
         nodeController.ProcessNodeEvents(Event.current);
-        DrawConnections();
-
-        DrawConnectionLine(Event.current);
-
-
-
+        DrawEdges();
+        DrawEdge(Event.current);
         ProcessToolStrip();
 
         if (GUI.changed) Repaint();
@@ -147,7 +143,7 @@ public class GraphEditor : EditorWindow
 
 
 
-    private void DrawConnections()
+    private void DrawEdges()
     {
         foreach (Edge edge in new List<Edge>(graph.Edges))
         {
@@ -229,7 +225,7 @@ public class GraphEditor : EditorWindow
         }
     }
 
-    private void DrawConnectionLine(Event e)
+    private void DrawEdge(Event e)
     {
         if (selectedInPoint != null && selectedOutPoint == null)
         {
