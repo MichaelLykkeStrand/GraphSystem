@@ -1,9 +1,12 @@
 using System;
 using UnityEngine;
 
-public class NodeTransition : MonoBehaviour, Completeable
+[System.Serializable]
+public class NodeTransition : MonoBehaviour, ICompleteable
 {
     public Action onComplete;
+    [SerializeField] private string m_ID = Guid.NewGuid().ToString();
+    public string ID => m_ID;
 
     public void Complete()
     {
@@ -11,6 +14,6 @@ public class NodeTransition : MonoBehaviour, Completeable
     }
 }
 
-public interface Completeable{
+public interface ICompleteable{
     public void Complete();
 }
