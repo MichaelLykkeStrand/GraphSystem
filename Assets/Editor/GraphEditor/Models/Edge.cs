@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 using UnityEngine;
 
 [System.Serializable]
-public class Edge
+public class Edge //TODO maybe make a renderable object to make drawing efficient and allow the camera to chose if an object should be rendered?
 {
     [SerializeField]
     public string transitionID;
