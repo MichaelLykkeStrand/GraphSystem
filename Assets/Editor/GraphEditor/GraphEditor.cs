@@ -139,10 +139,6 @@ public class GraphEditor : EditorWindow
         toolbarInt = GUI.Toolbar(new Rect(25, 25, 250, 30), toolbarInt, toolbarStrings);
     }
 
-
-
-
-
     private void DrawEdges()
     {
         foreach (Edge edge in new List<Edge>(graph.Edges))

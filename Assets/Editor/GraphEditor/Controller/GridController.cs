@@ -10,7 +10,7 @@ public class GridController
         this.editorWindow = window;
     }
 
-    // Update is called once per frame
+    // Update is called once per frame TODO refactor and set gridOpcaity from constructer or get set
         public void DrawGrid(Vector2 offset,float gridSpacing, float gridOpacity, Color gridColor)
     {
         int widthDivs = Mathf.CeilToInt(editorWindow.position.width / gridSpacing);
