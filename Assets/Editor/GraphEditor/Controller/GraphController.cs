@@ -4,5 +4,6 @@ using UnityEngine;
 
 public abstract class GraphController
 {
-    public abstract void Draw();
+    public abstract void Draw(Vector2 offset); //TODO
+
 }
